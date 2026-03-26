@@ -6,7 +6,7 @@
 
 ```bash
 cd OCO_v11MIP_analysis
-pip install -e
+pip install -e .
 ```
 
 The `-e` flag to `pip install` installs the package with a symlink to the soruce code, so that later updates via git pull do not require re-installation.
