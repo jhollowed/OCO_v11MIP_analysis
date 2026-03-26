@@ -18,3 +18,5 @@ The `-e` flag to `pip install` installs the package with a symlink to the soruce
 4. Download the datasets
 
 `OCO_v11MIP_analysis download all`
+
+This will download gridded fluxes from all models in the v11 MIP, as well as the CarbonTracker region file, and OCO-2 MIP aggregate regions. The total data volume is 2.0 GB.
