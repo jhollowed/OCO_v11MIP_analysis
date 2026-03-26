@@ -4,7 +4,7 @@
 # This file provides functions for handling data download and location specification
 
 import os
-import zipfile
+import tarfile
 import urllib.request
 from pathlib import Path
 
@@ -57,9 +57,7 @@ def get_cache_dir():
     Get data cache location, either specified by the OCO_MIP_DATASETS environment
     variable, or defaulting to the hidden diretory ~/.OCO_v11MIP_analysis 
     '''
-    return Path(
-        os.getenv('OCO_MIP_DATASETS', f'{Path.home()}/.OCO_v11MIP_analysis')
-    )
+    return os.getenv('OCO_MIP_DATASETS', f'{Path.home()}/.OCO_v11MIP_analysis')
 
 def download_data(dataset, force=False):
     '''
@@ -70,43 +68,50 @@ def download_data(dataset, force=False):
     dataset : str
         which dataset to download, either being
         'MIP'       : the MIP gridded flux data
-        'region'    : the CarbonTracker region definitions
-        'aggregate' : the CarbonTracker regional aggregate definitions
+        'regions'    : the CarbonTracker region definitions
+        'aggregates' : the CarbonTracker regional aggregate definitions
         'all'       : all of the above
     '''
     cache_dir = get_cache_dir()
-    cache_dir.mkdir(parents=True, exist_ok=True)
+    Path(cache_dir).mkdir(parents=True, exist_ok=True)
 
     if(dataset == 'all'):
         MIP_DIR        = download_data('MIP')
         REGION_FILE    = download_data('regions')
-        AGGREGATE_FILE = download_data('aggregatge')
+        AGGREGATE_FILE = download_data('aggregates')
         return
 
     if(dataset == 'MIP'):
-        zip_path = f'{cache_dir}/mip.zip'
-        extract_dir = f'{cache_dir}/OCO_V11MIP_gridded_fluxes_all_20260127'
+        filename    = MIP_URL.split('/')[-1]
+        dirname     = filename.split('.')[0]
+        tar_path    = f'{cache_dir}/{filename}'
+        extract_dir = f'{cache_dir}/{dirname}'
 
-        if extract_dir.exists() and not force:
+        if Path(extract_dir).exists() and not force:
             print(f'Dataset already exists at {extract_dir}')
             return extract_dir
 
-        print('Downloading MIP data...')
-        urllib.request.urlretrieve(DATA_URL, zip_path)
+        if Path(tar_path).exists() and not force:
+            print(f'Download already exists at {tar_path}')
+        else:
+            print('Downloading MIP data...')
+            urllib.request.urlretrieve(MIP_URL, tar_path)
 
         print('Extracting dataset...')
-        with zipfile.ZipFile(zip_path, 'r') as z:
-            z.extractall(extract_dir)
+        with tarfile.open(tar_path, 'r:gz') as tar:
+            tar.extractall(extract_dir)
+            os.remove(tar_path)
 
         print(f'Dataset ready at: {extract_dir}')
         return extract_dir
 
     elif(dataset == 'aggregates' or dataset == 'regions'):
         if(dataset == 'aggregates'): DATA_URL = AGGREGATES_URL
-        or dataset == 'regions'):    DATA_URL = REGION_URL
-        data_file = f'{cache_dir}/{DATA_URL.split('/')[-1]}'
+        elif(dataset == 'regions'):  DATA_URL = REGION_URL
+        filename  = DATA_URL.split('/')[-1]
+        data_file = f'{cache_dir}/{filename}'
         
-        if data_file.exists() and not force:
+        if Path(data_file).exists() and not force:
             print(f'Dataset already exists at {data_file}')
             return data_file
 

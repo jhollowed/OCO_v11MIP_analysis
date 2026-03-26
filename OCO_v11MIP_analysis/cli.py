@@ -1,6 +1,5 @@
 import argparse
-from .data import download_MIP
-from .data import download_regions
+from .data import download_data
 
 def main():
     '''
@@ -15,13 +14,14 @@ def main():
     dl = subparsers.add_parser('download', 
                                help='Download datasets')
     dl.add_argument('dataset',
-                    choices = ['MIP', 'region', 'aggregate']
+                    choices = ['MIP', 'region', 'aggregate', 'all'],
                     help='Dataset to download')
     dl.add_argument('--force', action='store_true', 
                     help='Redownload even if exists')
 
-    args.parser.parse_args()
+    args = parser.parse_args()
+
     if(args.command == 'download'):
-        download_MIP(dataset=args.dataset, force=args.force)
+        download_data(dataset=args.dataset, force=args.force)
     else:
         parser.print_help()

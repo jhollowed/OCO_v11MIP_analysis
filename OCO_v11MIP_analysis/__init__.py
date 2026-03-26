@@ -8,7 +8,7 @@
 
 # =========================================================================
 
-from .utils import *
+from .data import *
 
 # define attributes
 __version__ = '0.1'
