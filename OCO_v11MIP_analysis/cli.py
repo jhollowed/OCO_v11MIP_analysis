@@ -1,5 +1,5 @@
 import argparse
-from .data import download_data
+from .data_io import download_data
 
 def main():
     '''
