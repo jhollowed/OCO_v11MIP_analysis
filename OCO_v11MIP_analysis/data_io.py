@@ -105,6 +105,26 @@ def get_gc_ensemble(obs):
     '''
     return get_ensemble(obs, 'gc')
 
+def get_region_mask(region):
+    '''
+    Returns a binary region mask in lat,lon for the speicifed TransCom region
+
+    Params
+    ------
+    region : int
+        The TransCom region, specified by it's integer ID
+    
+    Returns
+    -------
+    The binary mask specifying this region
+    '''
+    # ---- get region mapping
+    region_map  = to_latlon(xr.open_dataset(get_region_file()))
+    tc_regions  = region_map['transcom_regions']
+    # ---- get mask for specified region
+    mask = tc_regions == region
+    return mask
+
 def to_latlon(x):
     '''
     Renames 'longitude' and 'latitude' dims to 'lon' and 'lat'

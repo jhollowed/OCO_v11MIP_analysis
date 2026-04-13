@@ -1,5 +1,7 @@
 ## Installation:
 
+1. Install [climate\_utils](https://github.com/jhollowed/climate_utils)
+
 1. Clone the package
 
 2. Locally install the package
