@@ -14,8 +14,7 @@ from scipy.optimize import curve_fit
 from .data_io import *
 from .constants import *
 
-sys.path.insert(1, '/Users/joe/repos/climate_utils')
-import climate_toolbox as ctb
+import climate_utils.climate_toolbox as ctb
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
